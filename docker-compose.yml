@@ -10,6 +10,8 @@ services:
       POSTGRES_PASSWORD: omero
     networks:
       - omero
+    ports:
+      - "5432:5432"
     volumes:
       - "database:/var/lib/postgresql/data"
 
@@ -29,14 +31,26 @@ services:
     volumes:
       - "omero:/OMERO"
 
+  # omeroweb:
+  #   image: "openmicroscopy/omero-web-standalone:5.6"
+  #   environment:
+  #     OMEROHOST: omeroserver
+  #   networks:
+  #     - omero
+  #   ports:
+  #     - "4080:4080"
+
   omeroweb:
     image: "openmicroscopy/omero-web-standalone:5.6"
     environment:
+      PYTHONPATH: /opt/omero/web/venv3/bin:/omero-iviewer/plugin
       OMEROHOST: omeroserver
     networks:
       - omero
     ports:
-      - "80:4080"
+      - "4080:4080"
+    volumes:
+      - "/opt/work/omero/omero-iviewer:/omero-iviewer"
 
 networks:
   omero:
